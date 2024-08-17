@@ -2,6 +2,7 @@ package nl.ThebigTijn.randomspawn;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.minecraft.block.Block;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -47,28 +48,27 @@ public class Randomspawn implements ModInitializer {
 	private void teleportPlayerToRandomLocation(ServerPlayerEntity player) {
 		Random random = new Random();
 		World world = player.getWorld();
-		BlockPos pos = null;
-
-		while (pos == null) {
-			int x = minX + random.nextInt(maxX - minX + 1);
-			int z = minZ + random.nextInt(maxZ - minZ + 1);
+		int x = minX + random.nextInt(maxX - minX + 1);
+		int z = minZ + random.nextInt(maxZ - minZ + 1);
+		BlockPos pos = findSolidGround(world, x, z);
+		while (!world.getBlockState(pos).isAir()) {
+			random = new Random();
+			x = minX + random.nextInt(maxX - minX + 1);
+			z = minZ + random.nextInt(maxZ - minZ + 1);
 			pos = findSolidGround(world, x, z);
+			if (pos != null && world.getBlockState(pos).isAir()) {
+				player.teleport((ServerWorld) world, pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, player.getYaw(), player.getPitch());
+			}
 		}
-
-		player.teleport((ServerWorld) world, pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, player.getYaw(), player.getPitch());
 	}
 
 	private BlockPos findSolidGround(World world, int x, int z) {
 		for (int y = world.getTopY() - 1; y > 0; y--) {
 			BlockPos pos = new BlockPos(x, y, z);
 			if (world.getBlockState(pos).isSolidBlock(world, pos)) {
-				BlockPos abovePos = pos.up();
-				if (!world.getBlockState(abovePos).isLiquid()) {
-					return abovePos;
-				}
+				return pos.up();
 			}
 		}
 		return null;
 	}
-
 }
