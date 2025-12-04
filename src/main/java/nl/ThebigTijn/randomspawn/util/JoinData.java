@@ -1,18 +1,13 @@
 package nl.ThebigTijn.randomspawn.util;
 
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.stats.Stats;
 
 public class JoinData {
 
-	public static boolean isFirstJoin(IEntityDataSaver player) {
-		NbtCompound nbt = player.getPersistentData();
-		boolean joined = nbt.getBoolean("joined");
-		return !joined;
-	}
-
-	public static void markPlayerAsJoined(IEntityDataSaver player) {
-		NbtCompound nbt = player.getPersistentData();
-		nbt.putBoolean("joined", true);
+	public static boolean isFirstJoin(ServerPlayer player) {
+		return player.getStats().getValue(Stats.CUSTOM.get(Stats.PLAY_TIME)) <= 10;
 	}
 
 }

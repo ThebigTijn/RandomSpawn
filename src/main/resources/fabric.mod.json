@@ -4,7 +4,7 @@
   "version": "${version}",
   "name": "RandomSpawn",
   "description": "",
-  "authors": [],
+  "author": "ThebigTijn",
   "contact": {},
   "license": "All-Rights-Reserved",
   "icon": "assets/randomspawn/icon.png",
@@ -15,11 +15,6 @@
     ]
   },
   "mixins": [
-    "randomspawn.mixins.json",
-    {
-      "config": "randomspawn.client.mixins.json",
-      "environment": "client"
-    }
   ],
   "depends": {
     "fabricloader": ">=${loader_version}",
